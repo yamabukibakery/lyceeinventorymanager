@@ -1,0 +1,13 @@
+{
+  "name": "lycee-inventory",
+  "version": "1.0.0",
+  "description": "Lycee TCG Inventory Manager",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "puppeteer": "^21.11.0"
+  }
+}
