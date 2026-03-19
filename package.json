@@ -4,10 +4,10 @@
   "description": "Lycee TCG Inventory Manager",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "sync": "node src/sync-cards.js"
   },
   "dependencies": {
-    "express": "^4.21.2",
-    "puppeteer": "^21.11.0"
+    "express": "^4.21.2"
   }
 }

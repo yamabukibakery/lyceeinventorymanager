@@ -1,9 +1,10 @@
 const express = require('express');
 const path = require('path');
 const scrapeAndUpdateCards = require('./scraper');
+const { ensureDataDir, readCards, getCardsFilePath } = require('./card-store');
 
 const app = express();
-const port = 8000;
+const port = Number(process.env.PORT) || 8000;
 let shouldStopFetch = false;
 let activeFetchPromise = null;
 let syncState = {
@@ -25,7 +26,22 @@ function updateSyncState(patch) {
   };
 }
 
+ensureDataDir();
+
 app.use(express.static(path.join(__dirname, '../public')));
+
+app.get('/api/health', (req, res) => {
+  res.json({
+    ok: true,
+    dataFile: getCardsFilePath(),
+    totalCards: readCards().length
+  });
+});
+
+app.get('/api/cards', (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.json(readCards());
+});
 
 app.post('/api/stop-fetch', (req, res) => {
   shouldStopFetch = true;

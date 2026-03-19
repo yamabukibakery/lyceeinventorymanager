@@ -22,7 +22,7 @@ const filterContainers = [
 
 let ownedCards = [];
 
-fetch('/data/cards.json')
+fetch('/api/cards', { cache: 'no-store' })
   .then(res => res.json())
   .then(cards => {
     ownedCards = cards

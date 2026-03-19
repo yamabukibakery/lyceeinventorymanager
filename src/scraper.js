@@ -1,10 +1,10 @@
-const fs = require('fs');
-const path = require('path');
+const { readCards, writeCards, getCardsFilePath } = require('./card-store');
 
 const CARD_LIST_URL = 'https://lycee-tcg.com/card/';
 const PAGE_SIZE = 200;
 const FETCH_TIMEOUT_MS = 15000;
 const FETCH_RETRIES = 2;
+const DECODER_FALLBACKS = ['utf-8', 'shift_jis', 'euc-jp', 'iso-2022-jp'];
 
 function decodeHtml(html) {
   return html
@@ -33,6 +33,30 @@ function splitTextLines(value) {
     .filter(Boolean);
 }
 
+function getCharset(contentType = '') {
+  const match = contentType.match(/charset=([^;]+)/i);
+  return match ? match[1].trim().toLowerCase() : 'utf-8';
+}
+
+function normalizeCharset(charset) {
+  return charset.replace(/_/g, '-');
+}
+
+function decodeResponseHtml(response, bytes) {
+  const preferredCharset = normalizeCharset(getCharset(response.headers.get('content-type')));
+  const charsetCandidates = [preferredCharset, ...DECODER_FALLBACKS.filter(charset => charset !== preferredCharset)];
+
+  for (const charset of charsetCandidates) {
+    try {
+      return new TextDecoder(charset).decode(bytes);
+    } catch (error) {
+      // Try the next supported encoding.
+    }
+  }
+
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
 async function fetchPageHtml(pageNum) {
   const url = `${CARD_LIST_URL}?page=${pageNum}&limit=${PAGE_SIZE}`;
   let lastError;
@@ -53,7 +77,9 @@ async function fetchPageHtml(pageNum) {
         throw new Error(`Failed to fetch page ${pageNum}: ${response.status}`);
       }
 
-      return response.text();
+      const buffer = await response.arrayBuffer();
+      const bytes = new Uint8Array(buffer);
+      return decodeResponseHtml(response, bytes);
     } catch (error) {
       lastError = error;
       if (attempt === FETCH_RETRIES) {
@@ -138,10 +164,8 @@ function parseCardsFromHtml(html) {
 }
 
 async function scrapeAndUpdateCards(shouldStop = () => false, onProgress = () => {}) {
-  const filePath = path.join(__dirname, '../public/data/cards.json');
-  const existingCards = fs.existsSync(filePath)
-    ? JSON.parse(fs.readFileSync(filePath, 'utf-8')).filter(card => card.id !== 'UNKNOWN')
-    : [];
+  const filePath = getCardsFilePath();
+  const existingCards = readCards().filter(card => card.id !== 'UNKNOWN');
 
   console.log(`Found ${existingCards.length} existing cards`);
   onProgress({ stage: 'starting', existingCards: existingCards.length, page: 0, message: `Found ${existingCards.length} existing cards` });
@@ -222,7 +246,7 @@ async function scrapeAndUpdateCards(shouldStop = () => false, onProgress = () =>
         });
       }
 
-      fs.writeFileSync(filePath, JSON.stringify(Array.from(cardMap.values()), null, 2));
+      writeCards(Array.from(cardMap.values()));
       pageNum += 1;
     } catch (error) {
       console.error(`Error on page ${pageNum}:`, error);
@@ -232,7 +256,7 @@ async function scrapeAndUpdateCards(shouldStop = () => false, onProgress = () =>
   }
 
   const merged = Array.from(cardMap.values());
-  fs.writeFileSync(filePath, JSON.stringify(merged, null, 2));
+  writeCards(merged);
   console.log(`Wrote ${merged.length} total cards to ${filePath}`);
   onProgress({ stage: 'saved', page: pageNum, message: `Wrote ${merged.length} total cards`, totalCards: merged.length, newCards: newCards.length });
 

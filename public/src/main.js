@@ -52,7 +52,7 @@ function setStatus(message, className = '') {
 }
 
 async function loadCards() {
-  const response = await fetch('/data/cards.json', { cache: 'no-store' });
+  const response = await fetch('/api/cards', { cache: 'no-store' });
   if (!response.ok) {
     throw new Error('Failed to load cards');
   }

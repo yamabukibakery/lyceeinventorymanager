@@ -13,6 +13,7 @@ yarn-error.log
 # IDE
 .vscode/
 .idea/
+.railway/
 
 # OS
 .DS_Store
