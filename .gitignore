@@ -1,5 +1,6 @@
 # Dependencies
 node_modules/
+.tools/
 npm-debug.log
 yarn-debug.log
 yarn-error.log
@@ -16,3 +17,8 @@ yarn-error.log
 # OS
 .DS_Store
 Thumbs.db 
+
+# Local runtime artifacts
+server.log
+server.err.log
+page1.html

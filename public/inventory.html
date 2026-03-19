@@ -3,12 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <title>My Inventory</title>
-  <link rel="stylesheet" href="../style/style.css">
+  <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-  <h1>My Inventory</h1>
-  <div id="inventory-list"></div>
-  <button onclick="exportInventory()">Export CSV</button>
-  <script src="../src/inventory.js"></script>
+  <main class="page-shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Lycee Overture</p>
+        <h1>My Inventory</h1>
+        <p class="hero-copy">Browse only the cards you own, with filters generated from your current collection.</p>
+      </div>
+      <div class="button-container">
+        <a href="/" class="inventory-link">Back to Card Browser</a>
+        <button type="button" onclick="exportInventory()">Export CSV</button>
+      </div>
+    </section>
+    <section class="browser-layout">
+      <aside class="filter-panel">
+        <label class="filter-field">
+          <span>Card Name / ID</span>
+          <input id="inventory-search" type="search" placeholder="Search owned cards">
+        </label>
+        <label class="filter-field">
+          <span>Element</span>
+          <div id="inventory-element" class="checkbox-group" data-label="Element"></div>
+        </label>
+        <label class="filter-field">
+          <span>Rarity</span>
+          <div id="inventory-rarity" class="checkbox-group" data-label="Rarity"></div>
+        </label>
+        <label class="filter-field">
+          <span>Series / IP</span>
+          <div id="inventory-series" class="checkbox-group" data-label="Series / IP"></div>
+        </label>
+        <label class="filter-field">
+          <span>Booster</span>
+          <div id="inventory-booster" class="checkbox-group" data-label="Booster"></div>
+        </label>
+        <label class="filter-field">
+          <span>Cost</span>
+          <div id="inventory-cost" class="checkbox-group" data-label="Cost"></div>
+        </label>
+      </aside>
+      <section>
+        <div class="results-bar">
+          <p id="inventory-summary" class="results-summary"></p>
+        </div>
+        <section id="inventory-list" class="card-grid"></section>
+      </section>
+    </section>
+  </main>
+  <dialog id="text-modal" class="text-modal">
+    <div class="text-modal-card">
+      <div class="text-modal-header">
+        <div>
+          <p id="text-modal-id" class="card-id"></p>
+          <h2 id="text-modal-title"></h2>
+        </div>
+        <button id="text-modal-close" type="button" class="secondary-button">Close</button>
+      </div>
+      <pre id="text-modal-body" class="text-modal-body"></pre>
+    </div>
+  </dialog>
+  <script src="/src/inventory.js"></script>
 </body>
 </html>

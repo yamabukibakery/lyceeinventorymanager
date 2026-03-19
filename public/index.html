@@ -3,15 +3,93 @@
 <head>
   <meta charset="UTF-8">
   <title>Lycee Inventory Tracker</title>
-  <link rel="stylesheet" href="style/style.css">
+  <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-  <h1>Lycee Overture Card Browser</h1>
-  <div class="button-container">
-    <button id="fetch-cards" class="fetch-button">Fetch New Cards</button>
-    <button id="stop-fetch" class="stop-button" disabled>Stop Fetch</button>
-  </div>
-  <div id="card-container"></div>
-  <script src="src/main.js"></script>
+  <main class="page-shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Lycee Overture</p>
+        <h1>Card Browser</h1>
+        <p class="hero-copy">Official card data synced from the Lycee card list, with original Japanese text preserved for each card.</p>
+      </div>
+      <div class="button-container">
+        <button id="fetch-cards" class="fetch-button">Sync Cards</button>
+        <button id="stop-fetch" class="stop-button" disabled>Stop Sync</button>
+        <a href="/inventory.html" class="inventory-link">View Inventory</a>
+      </div>
+      <div id="fetch-status" class="status"></div>
+    </section>
+    <section class="browser-layout">
+      <aside class="filter-panel">
+        <label class="filter-field">
+          <span>Card Name / ID</span>
+          <input id="search-filter" type="search" placeholder="Search name or card ID">
+        </label>
+        <label class="filter-field">
+          <span>Element</span>
+          <div id="element-filter" class="checkbox-group" data-label="Element"></div>
+        </label>
+        <label class="filter-field">
+          <span>Rarity</span>
+          <div id="rarity-filter" class="checkbox-group" data-label="Rarity"></div>
+        </label>
+        <label class="filter-field">
+          <span>Series / IP</span>
+          <div id="series-filter" class="checkbox-group" data-label="Series / IP"></div>
+        </label>
+        <label class="filter-field">
+          <span>Booster</span>
+          <div id="booster-filter" class="checkbox-group" data-label="Booster"></div>
+        </label>
+        <label class="filter-field">
+          <span>Cost</span>
+          <div id="cost-filter" class="checkbox-group" data-label="Cost"></div>
+        </label>
+        <label class="filter-field">
+          <span>EX</span>
+          <div id="ex-filter" class="checkbox-group" data-label="EX"></div>
+        </label>
+        <label class="filter-field">
+          <span>AP</span>
+          <div id="ap-filter" class="checkbox-group" data-label="AP"></div>
+        </label>
+        <label class="filter-field">
+          <span>DP</span>
+          <div id="dp-filter" class="checkbox-group" data-label="DP"></div>
+        </label>
+        <label class="filter-field">
+          <span>SP</span>
+          <div id="sp-filter" class="checkbox-group" data-label="SP"></div>
+        </label>
+        <label class="filter-field">
+          <span>DMG</span>
+          <div id="dmg-filter" class="checkbox-group" data-label="DMG"></div>
+        </label>
+        <button id="add-playset" type="button">Add Playset</button>
+        <p class="filter-help">Adds 4 copies of every base-rarity card in the selected booster.</p>
+      </aside>
+      <section>
+        <div class="results-bar">
+          <p id="results-summary" class="results-summary"></p>
+          <button id="load-more" type="button" class="secondary-button">Load More</button>
+        </div>
+        <section id="card-container" class="card-grid"></section>
+      </section>
+    </section>
+  </main>
+  <dialog id="text-modal" class="text-modal">
+    <div class="text-modal-card">
+      <div class="text-modal-header">
+        <div>
+          <p id="text-modal-id" class="card-id"></p>
+          <h2 id="text-modal-title"></h2>
+        </div>
+        <button id="text-modal-close" type="button" class="secondary-button">Close</button>
+      </div>
+      <pre id="text-modal-body" class="text-modal-body"></pre>
+    </div>
+  </dialog>
+  <script src="/src/main.js"></script>
 </body>
 </html>
